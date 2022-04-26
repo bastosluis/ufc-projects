@@ -10,7 +10,7 @@ x = x_dataset
 y = y_dataset
 space = np.linspace(np.min(x), np.max(x))
 x = np.c_[np.ones((x.shape[0],1)), x]
-
+'''
 # Gradient Descent
 w, iter_num, error_list = model.GD(x, y)
 plt.subplot(1,2,1)
@@ -26,11 +26,10 @@ plt.title("Reta resultante para o GD:")
 plt.show()
 '''
 # Ordinary Least Squares
-w, MSE = model.OLS(x1, y)
+w, MSE = model.OLS(x, y)
+y_p = x @ w 
 print(f'Valor do MSE no OLS: {MSE}')
-plt.plot(x,y, 'bo')
-funct = w[0] + w[1]*space
-plt.plot(space, funct, '-r', label='y=w0+w1*x')
+plt.plot(x_dataset,y_dataset, 'bo')
+plt.plot(x_dataset, y_p, '-r', label='y=w0+w1*x')
 plt.title("Reta resultante para o OLS:")
 plt.show()
-'''

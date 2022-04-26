@@ -14,7 +14,7 @@ def GD(x, y):
     w = np.zeros((x.shape[1],1))
     error_list = []
     iter_num = []
-    while t < 1500:
+    while t < 5000:
         iter_num.append(t)
         t += 1
         y_p = x @ w

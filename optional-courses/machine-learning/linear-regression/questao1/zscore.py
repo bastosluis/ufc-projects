@@ -1,7 +1,9 @@
 import numpy as np
 
-def normalize(x, mean, std):
-    return (x-mean)/std
+def normalize_row(row, mean, std):
+    return (row-mean)/std
 
-def denormalize(x, mean, std):
-    return mean+(std*x)
+def denormalize_row(row, mean, std):
+    return mean+(row*x)
+
+def normalize()
