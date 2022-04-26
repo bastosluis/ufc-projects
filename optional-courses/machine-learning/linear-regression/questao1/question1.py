@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt  # Biblioteca para gerar gráficos
 import modelslib as model
 import zscore
+
 #carregar os dados
 dataset = np.genfromtxt('./artificial1d.csv', delimiter=',')
 x_dataset = dataset[:,0:-1]
