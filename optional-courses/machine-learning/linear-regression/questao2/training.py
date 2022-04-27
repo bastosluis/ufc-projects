@@ -15,8 +15,8 @@ def train(model, training_percent, x_total, y_total):
     x_std = np.std(x)
     y_std = np.std(y)
     # normalização
-    x = zscore.normalize(x, x_mean, x_std)
-    y = zscore.normalize(y, y_mean, y_std)
+    x = zscore.normalize(x)
+    y = zscore.normalize(y)
     # uso do algoritmo do modelo
     x = np.c_[np.ones((x.shape[0],1)), x]
     w = model(x,y)
@@ -30,7 +30,7 @@ def ols_test(w, training_percent, x_total, y_total, training_RMSE, graph_title, 
     x_test = x_total[int(line_num*training_percent):]
     y_test = y_total[int(line_num*training_percent):]
 
-    normalized_x = zscore.normalize(x_test, np.mean(x_test), np.std(x_test))
+    normalized_x = zscore.normalize(x_test)
     normalized_x = np.c_[np.ones((x_test.shape[0],1)), normalized_x]
     y_p = normalized_x @ w
     errors = y_test - zscore.denormalize(y_p, np.mean(y_p), np.std(y_p))
@@ -53,10 +53,14 @@ def RMSE(errors):
 
 def nonlinear_transform(x_original, new_rows):
     x = x_original
+    res = np.ones_like(x)
     for j in range(x_original.shape[1]):
+        temp_columns = x[:,[j]]
         for i in range(new_rows):
-            x = np.c_[ x,  x[:,[j]]**(i+2) ]
-    return x
+            new_row = x[:,[j]]**(i+2) 
+            temp_columns = np.c_[temp_columns, new_row]
+        res = np.c_[res, temp_columns]
+    return res[:,1:]
 
 def polynomial(interval, order):
     result = 0
