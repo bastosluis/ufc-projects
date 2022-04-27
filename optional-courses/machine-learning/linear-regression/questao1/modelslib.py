@@ -21,33 +21,60 @@ def GD(x, y):
         t += 1
         y_p = x @ w
         errors = y - y_p
-        w = w + pace * np.mean(errors * x)
+        w = w + pace * np.reshape(np.mean(errors * x,axis=0), (-1,1))
         error_list.append(np.mean(errors**2))
     return w, iter_num, error_list
-
+'''
+def SGD_noperm(x, y):
+    pace = 0.01
+    t = 0       #iteração
+    w = np.zeros((x.shape[1],1))
+    error_list = []
+    iter_num = []
+    temp_list = []
+    y_p = np.zeros_like(y)
+    errors = np.zeros_like(y)
+    number_of_loops = 0
+    while t < 1500:
+        #line_perm = np.random.permutation(np.arange(x.shape[0]))
+        #print(f'{line_perm}\nvalor total: {line_perm.shape}')
+        i = 0
+        for i in range(x.shape[0]):  #for k in line_perm:
+            iter_num.append(t)
+            t += 1
+            y_p[i] = x[i] @ w
+            errors[i] = y[i][0] - y_p[i][0]
+            w = w + (pace * np.reshape(errors[i][0] * x[i], (-1,1)))
+            temp_list.append(errors[i][0])
+            error_list.append(np.mean(np.array(temp_list)**2 ))
+            #error_list.append(np.mean((errors[:i+1])**2))
+            #i += 1
+    return w, iter_num, error_list
+'''
 def SGD(x, y):
     pace = 0.01
     t = 0       #iteração
     w = np.zeros((x.shape[1],1))
     error_list = []
     iter_num = []
+    temp_list = []
     y_p = np.zeros_like(y)
     errors = np.zeros_like(y)
     number_of_loops = 0
     while t < 1500:
-        x_perm = np.random.permutation(x)
-        number_of_loops += 1
-        for i in range(x.shape[0]):
+        line_perm = np.random.permutation(np.arange(x.shape[0]))
+        i = 0
+        for k in line_perm:
             iter_num.append(t)
             t += 1
-            print(f'dentro do sgd:\nw.shape: {w.shape} \nx[1].shape: {np.reshape(x[i], (1,x.shape[1])).shape} ')
-            y_p[i] = x[i] @ w
-            print(f'shape y_p[i]: {y_p[i].shape} e valor no i: {y_p[i][0]}')
-            errors[i] = y[i][0] - y_p[i][0]
-            print(f'shape (errors[i][0] * x[i]): {(errors[i][0] * x[i]).T.shape} e a sua matriz: {(errors[i][0] * x[i]).T}')
-            w = w + (pace * (errors[i][0] * x[i])).T
-            error_list.append(np.mean(errors[:1+(i*number_of_loops)]**2))
+            y_p[k] = x[k] @ w
+            errors[k] = y[k][0] - y_p[k][0]
+            w = w + (pace * np.reshape(errors[k][0] * x[k], (-1,1)))
+            temp_list.append(errors[k][0])
+            error_list.append(np.mean(np.array(temp_list)**2 ))
+            i += 1
     return w, iter_num, error_list
+
 
 def SGD_simple(x, y):
     pace = 0.001
