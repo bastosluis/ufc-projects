@@ -51,13 +51,13 @@ def ols_test(w, training_percent, x_total, y_total, training_RMSE, graph_title, 
 def RMSE(errors):
     return np.sqrt( np.mean(errors ** 2) )
 
-def nonlinear_transform(x_original, new_rows):
+def nonlinear_transform(x_original, order):
     x = x_original
-    res = np.ones_like(x)
+    res = np.ones((x.shape[0],1))
     for j in range(x_original.shape[1]):
         temp_columns = x[:,[j]]
-        for i in range(new_rows):
-            new_row = x[:,[j]]**(i+2) 
+        for i in range(1,order):
+            new_row = x[:,[j]]**(i+1) 
             temp_columns = np.c_[temp_columns, new_row]
         res = np.c_[res, temp_columns]
     return res[:,1:]
