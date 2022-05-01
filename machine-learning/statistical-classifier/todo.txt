@@ -1,0 +1,4 @@
+lista 2: 
+- usar a gaussiana
+- 10 fold é fazer 10 testes usando cada grupo como teste
+- ver oq mais precisa
