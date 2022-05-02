@@ -156,7 +156,7 @@ def SGD_logi(x, y):
 
 # auxiliares:
 def sigmoid(value):
-    return 1 / (1 + np.exp(-value))
+    return 1/(1 + np.exp(-value))
 
 def RMSE(errors):
     return np.sqrt( np.mean(errors ** 2) )

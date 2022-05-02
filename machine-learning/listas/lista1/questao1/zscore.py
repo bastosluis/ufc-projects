@@ -34,3 +34,6 @@ def denormalize(m, mean, std):
         m_res = np.c_[ m_res, denorm_row ] 
         #print(f'm_res: {m_res} \nshape: {m_res.shape}')
     return m_res
+
+def sigmoid(value):
+    return 1 / (1 + np.exp(-value))

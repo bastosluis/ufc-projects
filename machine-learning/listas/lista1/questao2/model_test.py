@@ -5,7 +5,7 @@ import zscore
 import training
 
 dataset = np.genfromtxt('./california.csv', delimiter=',')
-x_original = dataset[:,0:-1]
+x_original = dataset[:,:-1]
 y_original = dataset[:,[-1]]
 for i in range(11): # mudar pra 11
     x_current = training.nonlinear_transform(x_original, i)

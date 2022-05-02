@@ -6,7 +6,8 @@ import zscore
 dataset = np.genfromtxt('./artificial1d.csv', delimiter=',')
 x_dataset = dataset[:,:-1]
 y_dataset = dataset[:,[-1]]
-x = x_dataset
+
+x = model.nonlinear_transform(x_dataset, 25) #polinomio de grau 25
 y = y_dataset
 #print(x_dataset)
 # Salvando a média e desvio padrão:
@@ -42,13 +43,4 @@ y_p = x @ w
 axis[1,1].plot(x_dataset,y_dataset, 'bo')
 axis[1,1].plot(x_dataset, y_p, '-r', label='y=w0+w1*x')
 axis[1,1].set_title("Reta resultante para o SGD:")
-plt.show()
-
-# Ordinary Least Squares
-w, MSE = model.OLS(x, y)
-y_p = x @ w 
-print(f'Valor do MSE no OLS: {MSE}')
-plt.plot(x_dataset,y_dataset, 'bo')
-plt.plot(x_dataset, y_p, '-r', label='y=w0+w1*x')
-plt.title("Reta resultante para o OLS:")
 plt.show()
