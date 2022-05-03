@@ -126,7 +126,7 @@ def GD_logi(x, y):
         t += 1
         y_p = sigmoid(x @ w) # exclusivo da regressão logística
         errors = y - y_p 
-        w = w + pace * np.reshape(np.mean(errors * x,axis=0), (-1,1))
+        w = w + pace * np.reshape(np.mean(errors * x,axis=0), (-1,1)) # w <- w @ (alpha * matriz com as médias das linhas da matriz erro+x).T
         error_list.append(np.mean(errors**2))
     return w, iter_num, error_list
 
