@@ -153,11 +153,23 @@ def SGD_logi(x, y):
             error_list.append(np.mean(np.array(temp_list)**2 ))
             i += 1
     return w, iter_num, error_list
-
+def naive_bayes_gaussian(x, y, test):
+    for row in x:
+        pass #mudar
 # auxiliares:
+
 def sigmoid(value):
     return 1/(1 + np.exp(-value))
-
+    '''
+def sigmoid_vec(column_matrix):
+    x = column_matrix
+    for line in x:
+        line[0] = 1/(1 + np.exp(-line[0])) #line[0] pra manipular o elementro dentro da linha (é apenas um elemento, mas é necessário adicionar o 0)
+    return x
+    
+def sigmoid_scalar(x):
+    return 1/(1 + np.exp(-x))
+    '''
 def RMSE(errors):
     return np.sqrt( np.mean(errors ** 2) )
 
@@ -171,3 +183,11 @@ def nonlinear_transform(x_original, new_rows):
             temp_columns = np.c_[temp_columns, new_row]
         res = np.c_[res, temp_columns]
     return res[:,1:]
+
+    def gaussian_density(row):     
+        mean = self.mean[class_idx]
+        var = self.var[class_idx]
+        numerator = np.exp((-1/2)*((x-mean)**2) / (2 * var))
+        denominator = np.sqrt(2 * np.pi * var)
+        prob = numerator / denominator
+        return prob
