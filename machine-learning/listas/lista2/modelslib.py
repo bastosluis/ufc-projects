@@ -121,12 +121,13 @@ def GD_logi(x, y):
     w = np.zeros((x.shape[1],1))
     error_list = []
     iter_num = []
-    while t < 1500:
+    n = x.shape[0]
+    while t < 100:
         iter_num.append(t)
         t += 1
         y_p = sigmoid(x @ w) # exclusivo da regressão logística
         errors = y - y_p 
-        w = w + pace * np.reshape(np.mean(errors * x,axis=0), (-1,1)) # w <- w @ (alpha * matriz com as médias das linhas da matriz erro+x).T
+        w = w + pace * ((errors.T @ x).T)/n # w <- w @ (alpha * matriz com as médias das linhas da matriz erro+x).T
         error_list.append(np.mean(errors**2))
     return w, iter_num, error_list
 
@@ -153,6 +154,7 @@ def SGD_logi(x, y):
             error_list.append(np.mean(np.array(temp_list)**2 ))
             i += 1
     return w, iter_num, error_list
+
 def naive_bayes_gaussian(x, y, test):
     for row in x:
         pass #mudar
@@ -160,16 +162,7 @@ def naive_bayes_gaussian(x, y, test):
 
 def sigmoid(value):
     return 1/(1 + np.exp(-value))
-    '''
-def sigmoid_vec(column_matrix):
-    x = column_matrix
-    for line in x:
-        line[0] = 1/(1 + np.exp(-line[0])) #line[0] pra manipular o elementro dentro da linha (é apenas um elemento, mas é necessário adicionar o 0)
-    return x
     
-def sigmoid_scalar(x):
-    return 1/(1 + np.exp(-x))
-    '''
 def RMSE(errors):
     return np.sqrt( np.mean(errors ** 2) )
 
