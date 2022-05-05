@@ -156,20 +156,62 @@ def SGD_logi(x, y):
             i += 1
     return w, iter_num, error_list
 
-def naive_bayes_gaussian(x, y, test):
+def naive_bayes_gaussian(x, y):
     mean_vector = []
-    covar_vec = []
+    covar_vector = []
+    probabilities = []
     # calcular o vetor de médias e matriz de covariancia:
     for k in (0,1):     # considerando apenas 2 classes (0,1)
         # filtrando os dados pela classe k
         x_k = x[y.reshape(-1) == k,:]
         # calcula-se a média em torno das linhas
-        mean = np.mean(xk, axis=1)
+        mean = np.mean(x_k, axis=1)
         mean_vector.append(mean)
-
+        # probabilidade p(ck) = Nk/N
+        probabilities.append(x_k.shape[0]/x.shape[0]) 
         # matriz de covariancias: 
-        
+        covac = sum((x_k - mean)**2, axis=1) / (x_k.shape[0]-1)
+        covar_vector.append(covac)
 
+    return probabilities, mean_vector, covar_vector
+        
+def predict_nbg(x, probabilities, mean_vector, covar_vector):
+    y_p = []
+    for i in range(x.shape[0])
+        score_vector = []
+        x_current = x[i]
+        for k in (0,1):
+            covar = covar_vector[k]
+            mean = mean_vector[k]
+            score = np.log10(probabilities[k]) - ( (np.log10(2*np.pi*covar)).sum() )/2 - ( ((x_current - mean)/covar).sum() )/2
+            score_vector.append(score)
+        predicted_class = (np.array(score_vector)).argmax()
+        y_p.append(predicted_class) # em vez de retornar, dar append numa lista
+    return np.array(y_p).reshape((1,-1))
+
+def gaussian_discriminant_analysis(x, y):
+    mean_vector = []
+    covar_vector = []
+    probabilities = []
+    # calcular o vetor de médias e matriz de covariancia:
+    for k in (0,1):     # considerando apenas 2 classes (0,1)
+        # filtrando os dados pela classe k
+        x_k = x[y.reshape(-1) == k,:]
+        # calcula-se a média em torno das linhas
+        mean = np.mean(x_k, axis=1)
+        mean_vector.append(mean)
+        # probabilidade p(ck) = Nk/N
+        probabilities.append(x_k.shape[0]/x.shape[0]) 
+        # matriz de covariancias: 
+        covac = 0
+        for i in range(x_k.shape[0]):
+            x_minus_mean = x_k[i] - mean
+            covac = covac + ((x_minus_mean @ x_minus_mean.T) / (x_k.shape[0]-1))
+        #x_minus_mean = x_k - mean
+        #covac = sum(x_minus_mean @ x_minus_mean.T , axis=1) / (x_k.shape[0]-1)
+        covar_vector.append(covac)
+
+    return probabilities, mean_vector, covar_vector
 
 # auxiliares:
 
