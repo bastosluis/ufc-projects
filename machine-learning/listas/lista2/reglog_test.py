@@ -11,9 +11,9 @@ x = x_dataset
 y = y_dataset
 
 # Normalizando x:
-x = norm.normalize(x)
+#x = norm.normalize(x)
 # Aplicando a coluna de 1s
-x = np.c_[np.ones((x.shape[0],1)), x]
+#x = np.c_[np.ones((x.shape[0],1)), x]
 '''
 figure, axis = plt.subplots(1, 2)
 
@@ -24,12 +24,18 @@ y_p = x @ w
 
 plt.show()
 '''
+'''
 w, iter_num, error_list = model.GD_logi(x, y)
 y_p = np.around(model.sigmoid(x @ w)) 
+'''
+tupla = model.naive_bayes_gaussian(x,y)
+y_p = model.predict_nbg(x, tupla[0], tupla[1], tupla[2])
 '''
 rows = 400
 y_p = y[:rows]
 y_p = np.r_[y_p, np.ones( (y.shape[0]-rows, 1) )]
 '''
+print(f'shape y_p: {y_p.shape}')
 print(f'acurácia: {metrics.accuracy(y, y_p)*100}%, shape do y: {y.shape}')
-print(y_p[:30])
+print(f'presença de zeros: {metrics.accuracy(np.zeros_like(y_p), y_p)*100}%')
+#print(y_p[:30])

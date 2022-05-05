@@ -165,12 +165,12 @@ def naive_bayes_gaussian(x, y):
         # filtrando os dados pela classe k
         x_k = x[y.reshape(-1) == k,:]
         # calcula-se a média em torno das linhas
-        mean = np.mean(x_k, axis=1)
+        mean = np.mean(x_k, axis=0)
         mean_vector.append(mean)
         # probabilidade p(ck) = Nk/N
         probabilities.append(x_k.shape[0]/x.shape[0]) 
         # matriz de covariancias: 
-        covar = sum((x_k - mean)**2, axis=1) / (x_k.shape[0]-1)
+        covar = np.sum((x_k - mean)**2, axis=0) / (x_k.shape[0]-1)
         covar_vector.append(covar)
 
     return probabilities, mean_vector, covar_vector
@@ -179,15 +179,16 @@ def predict_nbg(x, probabilities, mean_vector, covar_vector):
     y_p = []
     for i in range(x.shape[0]):
         score_vector = []
-        x_current = x[i]
+        x_i = np.array([x[i]])
         for k in (0,1):
-            covar = covar_vector[k]
-            mean = mean_vector[k]
-            score = np.log(probabilities[k]) - ( (np.log(2*np.pi*covar)).sum() )/2 - ( ((x_current - mean)/covar).sum() )/2
+            covar = np.array([covar_vector[k]])
+            mean = np.array([mean_vector[k]])
+            print(f'shape de mean: {mean.shape}\nshape de x: {x_i.shape}\nshape de covar: {covar.shape}')
+            score = np.log(probabilities[k]) - ( (np.log(2*np.pi*covar)).sum() )/2 - ( ((x_i - mean)/covar).sum() )/2
             score_vector.append(score)
         predicted_class = (np.array(score_vector)).argmax()
         y_p.append(predicted_class) 
-    return np.array(y_p).reshape((1,-1))
+    return np.array(y_p).reshape((-1,1))
 
 def gaussian_discriminant_analysis(x, y):
     mean_vector = []
