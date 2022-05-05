@@ -127,7 +127,8 @@ def GD_logi(x, y):
         t += 1
         y_p = sigmoid(x @ w) # exclusivo da regressão logística
         errors = y - y_p 
-        w = w + pace * ((errors.T @ x).T)/n # w <- w @ (alpha * matriz com as médias das linhas da matriz erro+x).T
+        w = w + pace * (x.T @ errors)/n
+        #w = w + pace * ((errors.T @ x).T)/n # w <- w @ (alpha * matriz com as médias das linhas da matriz erro+x).T
         error_list.append(np.mean(errors**2))
     return w, iter_num, error_list
 
@@ -156,8 +157,20 @@ def SGD_logi(x, y):
     return w, iter_num, error_list
 
 def naive_bayes_gaussian(x, y, test):
-    for row in x:
-        pass #mudar
+    mean_vector = []
+    covar_vec = []
+    # calcular o vetor de médias e matriz de covariancia:
+    for k in (0,1):     # considerando apenas 2 classes (0,1)
+        # filtrando os dados pela classe k
+        x_k = x[y.reshape(-1) == k,:]
+        # calcula-se a média em torno das linhas
+        mean = np.mean(xk, axis=1)
+        mean_vector.append(mean)
+
+        # matriz de covariancias: 
+        
+
+
 # auxiliares:
 
 def sigmoid(value):

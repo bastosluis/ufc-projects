@@ -25,7 +25,7 @@ y_p = x @ w
 plt.show()
 '''
 w, iter_num, error_list = model.GD_logi(x, y)
-y_p = x @ w 
+y_p = np.around(model.sigmoid(x @ w)) 
 '''
 rows = 400
 y_p = y[:rows]
