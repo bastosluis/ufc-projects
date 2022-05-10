@@ -156,6 +156,7 @@ def SGD_logi(x, y):
             i += 1
     return w, iter_num, error_list
 
+
 def naive_bayes_gaussian(x, y):
     mean_vector = []
     covar_vector = []
@@ -174,21 +175,6 @@ def naive_bayes_gaussian(x, y):
         covar_vector.append(covar)
 
     return probabilities, mean_vector, covar_vector
-        
-def predict_nbg(x, probabilities, mean_vector, covar_vector):
-    y_p = []
-    for i in range(x.shape[0]):
-        score_vector = []
-        x_i = np.array([x[i]])
-        for k in (0,1):
-            covar = covar_vector[k]
-            mean = mean_vector[k]
-            print(f'shape de mean: {mean.shape}\nshape de x: {x_i.shape}\nshape de covar: {covar.shape}')
-            score = np.log(probabilities[k]) - ( (np.log(2*np.pi*covar)).sum() )/2 - ( ((x_i - mean)/covar).sum() )/2
-            score_vector.append(score)
-        predicted_class = (np.array(score_vector)).argmax()
-        y_p.append(predicted_class) 
-    return np.array(y_p).reshape((-1,1))
 
 def gaussian_discriminant_analysis(x, y):
     mean_vector = []
@@ -204,7 +190,7 @@ def gaussian_discriminant_analysis(x, y):
         # probabilidade p(ck) = Nk/N
         probabilities.append(x_k.shape[0]/x.shape[0]) 
         # matriz de covariancias: 
-        covar = np.zeros((x.shape[1], x.shape[1]))
+        covar = np.zeros((x.shape[1], x.shape[1])) # DxD
         for i in range(x_k.shape[0]):
             x_minus_mean = x_k[i] - mean
             covar = covar + ((x_minus_mean @ x_minus_mean.T) / (x_k.shape[0]-1))
@@ -212,7 +198,23 @@ def gaussian_discriminant_analysis(x, y):
         #covar = sum(x_minus_mean @ x_minus_mean.T , axis=1) / (x_k.shape[0]-1)
         covar_vector.append(covar)
 
-    return probabilities, mean_vector, covar_vector
+    return probabilities, mean_vector, covar_vector    
+
+
+def predict_nbg(x, probabilities, mean_vector, covar_vector):
+    y_p = []
+    for i in range(x.shape[0]):
+        score_vector = []
+        x_i = np.array([x[i]])
+        for k in (0,1):
+            covar = covar_vector[k]
+            mean = mean_vector[k]
+            print(f'shape de mean: {mean.shape}\nshape de x: {x_i.shape}\nshape de covar: {covar.shape}')
+            score = np.log(probabilities[k]) - ( (np.log(2*np.pi*covar)).sum() )/2 - ( ((x_i - mean)/covar).sum() )/2
+            score_vector.append(score)
+        predicted_class = (np.array(score_vector)).argmax()
+        y_p.append(predicted_class) 
+    return np.array(y_p).reshape((-1,1))
 
 def predict_gda(x_total, probabilities, mean_vector, covar_vector):
     y_p = []
@@ -220,7 +222,7 @@ def predict_gda(x_total, probabilities, mean_vector, covar_vector):
         score_vector = []
         x = x_total[i]
         for k in (0,1):
-            covar = covar_vector[k]
+            covar = covar_vector[k] + np.identity(covar.shape[0])*1e-20 # fator de correção na diagonal principal
             mean = mean_vector[k]
             x_minus_mean = (x - mean)
             score = np.log(probabilities[k]) - ( (np.log(np.linalg.det(covar))) )/2 - ( x_minus_mean.T @ np.linalg.inv(covar) @ x_minus_mean )/2
