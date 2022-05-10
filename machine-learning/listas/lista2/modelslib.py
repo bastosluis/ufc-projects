@@ -204,7 +204,7 @@ def gaussian_discriminant_analysis(x, y):
         # probabilidade p(ck) = Nk/N
         probabilities.append(x_k.shape[0]/x.shape[0]) 
         # matriz de covariancias: 
-        covar = 0
+        covar = np.zeros((x.shape[1], x.shape[1]))
         for i in range(x_k.shape[0]):
             x_minus_mean = x_k[i] - mean
             covar = covar + ((x_minus_mean @ x_minus_mean.T) / (x_k.shape[0]-1))
@@ -222,13 +222,32 @@ def predict_gda(x_total, probabilities, mean_vector, covar_vector):
         for k in (0,1):
             covar = covar_vector[k]
             mean = mean_vector[k]
-            x_minus_mean = x - mean
+            x_minus_mean = (x - mean)
             score = np.log(probabilities[k]) - ( (np.log(np.linalg.det(covar))) )/2 - ( x_minus_mean.T @ np.linalg.inv(covar) @ x_minus_mean )/2
             score_vector.append(score)
         predicted_class = (np.array(score_vector)).argmax()
         y_p.append(predicted_class)
     return np.array(y_p).reshape((-1,1))
 
+# adg considerando que x é uma coluna:
+def test_predict_gda(x_total, probabilities, mean_vector, covar_vector):
+    y_p = []
+    for i in range(x_total.shape[0]):
+        score_vector = []
+        x = x_total[i]
+        for k in (0,1):
+            covar = covar_vector[k]
+            mean = mean_vector[k]
+            x_minus_mean = (x - mean) #considerando que era pra ser matriz coluna, pois (Dx1).T @ DxD @ Dx1 
+            if i == 0:
+                print(f'==========iteraçao {k}===========')
+                print(f'shape de mean: {mean.shape}\nshape de x: {x.shape}\nshape de covar: {covar.shape}\nshape de x - mean: {x_minus_mean.shape}')
+            covar_inv = np.linalg.inv(covar)
+            score = np.log(probabilities[k]) - ( (np.log(np.linalg.det(covar))) )/2 - ( x_minus_mean.T @ covar_inv @ x_minus_mean )/2
+            score_vector.append(score)
+        predicted_class = (np.array(score_vector)).argmax()
+        y_p.append(predicted_class)
+    return np.array(y_p).reshape((-1,1))
 # auxiliares:
 
 def sigmoid(value):

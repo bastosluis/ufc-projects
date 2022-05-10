@@ -20,18 +20,19 @@ y = data_training[:,[-1]]
 x_test = data_test[:,:-1]
 y_test = data_test[:,[-1]]
 '''
+'''
 # Normalizando x:
 x = norm.normalize(x)
 # Aplicando a coluna de 1s
 x = np.c_[np.ones((x.shape[0],1)), x]
-'''
+
 # regressao logistica:
 x_test = norm.normalize(x_test)
 x_test = np.c_[np.ones((x_test.shape[0],1)), x_test]
 w, iter_num, error_list = model.GD_logi(x, y)
 y_p = np.around(model.sigmoid(x_test @ w)) 
 '''
-
+'''
 # naive bayes:
 y_test = y
 tupla = model.naive_bayes_gaussian(x,y)
@@ -40,15 +41,15 @@ y_p = model.predict_nbg(x, tupla[0], tupla[1], tupla[2])
 # adg:
 y_test = y
 tupla = model.gaussian_discriminant_analysis(x,y)
-y_p = model.predict_gda(x, tupla[0], tupla[1], tupla[2])
-'''
+y_p = model.test_predict_gda(x, tupla[0], tupla[1], tupla[2])
+
 
 '''
 rows = 400
 y_p = y[:rows]
 y_p = np.r_[y_p, np.ones( (y.shape[0]-rows, 1) )]
 '''
-print(f'shape y_p: {y_p.shape}')
+print(f'==============teste===============\nshape y_p: {y_p.shape}')
 print(f'shape y treinamento: {y.shape}')
 print(f'shape dataset: {dataset.shape}')
 print(f'acurácia: {metrics.accuracy(y_test, y_p)}%')
