@@ -10,16 +10,17 @@ def kfold(k, data):
     fold_size = int(n/k)
     fold_vector = []
     residue = n%k
-    add_one = 1
+    current = 0
     # construindo cada fold:
     for i in range(k):
         # a iteração é um array de boleanos, onde o fold de teste é a parte que possui somente False
         fold = np.full((1,data.shape[0]), True)
-        if residue == 0:
-            add_one = 0
-        for j in range(i*fold_size, (i+1)*fold_size + add_one):
+        for j in range(current, current+fold_size):
             fold[:,[j]] = False
+            current+=1
         if residue > 0:
+            fold[:,[current]] = False
+            current+=1
             residue -= 1
         fold_vector.append(fold)
     return fold_vector
