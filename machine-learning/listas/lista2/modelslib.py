@@ -227,9 +227,6 @@ def predict_gda(x_total, probabilities, mean_vector, covar_vector):
             covar = covar_vector[k] + np.identity(x_total.shape[1])*1e-20 # fator de correção na diagonal principal
             mean = mean_vector[k]
             x_minus_mean = (x - mean)
-            if i == 0:
-                print(f'==========iteraçao {k}===========')
-                print(f'shape de mean: {mean.shape}\nshape de x: {x.shape}\nshape de covar: {covar.shape}\nshape de x - mean: {x_minus_mean.shape}')
             score = np.log(probabilities[k]) -  (np.log(np.linalg.det(covar)))/2 - (x_minus_mean @ np.linalg.inv(covar) @ x_minus_mean.T)/2
             score_vector.append(score)
         predicted_class = (np.array(score_vector)).argmax()
