@@ -38,24 +38,19 @@ y_p = np.around(model.sigmoid(x_test @ w))
 y_test = y
 tupla = model.naive_bayes_gaussian(x,y)
 y_p = model.predict_nbg(x, tupla[0], tupla[1], tupla[2])
-
+'''
 # adg:
 y_test = y
 tupla = model.gaussian_discriminant_analysis(x,y)
-y_p = model.test_predict_gda(x, tupla[0], tupla[1], tupla[2])
-
-
-rows = 400
-y_p = y[:rows]
-y_p = np.r_[y_p, np.ones( (y.shape[0]-rows, 1) )]
+y_p = model.predict_gda(x, tupla[0], tupla[1], tupla[2])
 
 print(f'==============teste===============\nshape y_p: {y_p.shape}')
 print(f'shape y treinamento: {y.shape}')
 print(f'shape dataset: {dataset.shape}')
-print(f'acurácia: {metrics.accuracy(y_test, y_p)}%')
+print(f'acurácia: {metrics.accuracy(y_test, y_p)*100}%')
 print(f'presença de zeros: {metrics.accuracy(np.zeros_like(y_p), y_p)*100}%')
 print(f'a acurácia da função comparadora: {metrics.accuracy(np.zeros_like(y_p), np.zeros_like(y_p))*100}%')
-print(y_p[:30])
+#print(y_p[:30])
 '''
 def kfold_test(data):
     folds = training.kfold(10, data)
@@ -65,4 +60,4 @@ def kfold_test(data):
         print(i)
         k+=1
 
-kfold_test(dataset)
+kfold_test(dataset)'''
