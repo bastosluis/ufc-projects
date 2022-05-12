@@ -38,7 +38,7 @@ y_p = np.around(model.sigmoid(x_test @ w))
 y_test = y
 tupla = model.naive_bayes_gaussian(x,y)
 y_p = model.predict_nbg(x, tupla[0], tupla[1], tupla[2])
-
+print(f'estamos usando naive bayes')
 '''
 # adg:
 y_test = y

@@ -209,10 +209,7 @@ def predict_nbg(x, probabilities, mean_vector, covar_vector):
         for k in (0,1):
             covar = covar_vector[k]
             mean = mean_vector[k]
-            if i == 0:
-                print(f'==========iteraçao {k}===========')
-                print(f'shape de mean: {mean.shape}\nshape de x: {x_i.shape}\nshape de covar: {covar.shape}')
-            score = np.log(probabilities[k]) - ((np.log(2*np.pi*covar)).sum())/2 - (((x_i - mean)/covar).sum())/2
+            score = np.log(probabilities[k]) - ((np.log(2*np.pi*covar)).sum())/2 - (((x_i - mean)**2/covar).sum())/2
             score_vector.append(score)
         predicted_class = (np.array(score_vector)).argmax()
         y_p.append(predicted_class) 
