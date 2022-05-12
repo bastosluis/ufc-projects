@@ -33,17 +33,19 @@ x_test = np.c_[np.ones((x_test.shape[0],1)), x_test]
 w, iter_num, error_list = model.GD_logi(x, y)
 y_p = np.around(model.sigmoid(x_test @ w)) 
 '''
-
+'''
 # naive bayes:
 y_test = y
 tupla = model.naive_bayes_gaussian(x,y)
 y_p = model.predict_nbg(x, tupla[0], tupla[1], tupla[2])
 print(f'estamos usando naive bayes')
 '''
+'''
 # adg:
 y_test = y
 tupla = model.gaussian_discriminant_analysis(x,y)
 y_p = model.predict_gda(x, tupla[0], tupla[1], tupla[2])
+'''
 '''
 print(f'==============teste===============\nshape y_p: {y_p.shape}')
 print(f'shape y treinamento: {y.shape}')
@@ -53,13 +55,3 @@ print(f'presença de zeros: {metrics.accuracy(np.zeros_like(y_p), y_p)*100}%')
 print(f'a acurácia da função comparadora: {metrics.accuracy(np.zeros_like(y_p), np.zeros_like(y_p))*100}%')
 #print(y_p[:30])
 '''
-
-def kfold_test(data):
-    folds = training.kfold(5, data[:22])
-    k = 1
-    for i in folds:
-        print(f'===============fold {k}===============')
-        print(i)
-        k+=1
-
-kfold_test(dataset)'''
