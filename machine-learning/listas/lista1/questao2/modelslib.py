@@ -16,12 +16,13 @@ def GD(x, y):
     w = np.zeros((x.shape[1],1))
     error_list = []
     iter_num = []
+    n = x.shape[0]
     while t < 1500:
         iter_num.append(t)
         t += 1
         y_p = x @ w
         errors = y - y_p
-        w = w + pace * np.reshape(np.mean(errors * x,axis=0), (-1,1))
+        w = w + pace * ((errors.T @ x).T)/n
         error_list.append(np.mean(errors**2))
     return w, iter_num, error_list
 '''
