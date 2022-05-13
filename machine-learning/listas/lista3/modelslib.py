@@ -230,7 +230,37 @@ def predict_gda(x_total, probabilities, mean_vector, covar_vector):
         y_p.append(predicted_class)
     return np.array(y_p).reshape((-1,1))
 
+def k_nearest_neighbour(k, x, y, x_test):
+    y_p = []
+    for current in range(x_test.shape[0]):
+        k_nearest = []
+        k_nearest_distance = []
+        for i in range(x.shape[0]): 
+            d = euclidian_distance(x_test[current], x[i])
+            # se a lista não está completa:
+            if len(k_nearest) < k:
+                k_nearest.append(y[i][0])
+                k_nearest_distance.append(d)
+            # se já estiver completa, checa-se se algum valor deve ser substituído:
+            else:
+                to_be_added = ( max(k_nearest_distance) > d )
+                # no caso em que temos elementos equidistantes, o mais antigo continuará.
+                if to_be_added:
+                    slot = np.argmax(k_nearest_distance)
+                    k_nearest[slot] = y[i][0]
+                    k_nearest_distance[slot] = d
+        y_p.append(most_common(k_nearest))
+    return np.array(y_p).reshape((-1,1))
+        
+
+
+
 # auxiliares:
+
+def most_common(x):
+    return np.bincount(x).argmax()
+def euclidian_distance(x1, x2):
+    return np.sqrt(((x1-x2)**2).sum())
 
 def sigmoid(value):
     return 1/(1 + np.exp(-value))
