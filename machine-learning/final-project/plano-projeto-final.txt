@@ -6,7 +6,7 @@ plano A:
         
         - caso for interessante, podemos aumentar a complexidade do projeto da seguinte forma:
         - com essa informação, podemos também utilizá-la para funelar e tentar advinhar outras características da carta 
-        (se for um monstro, advinhar sua raça, se for uma spell, advinhar seu tipo (spell rápida, spell comum, spell contínua) e se for uma trap advinhar se ela é normal, contínua ou rápida)
+        (se for um monstro, advinhar sua raça, se for uma spell, advinhar seu tipo (spell rápida, spell comum, spell contínua) e se for uma trap advinhar se ela é normal, contínua ou counter)
         - com esses dados, podemos tentar novamente advinhar utilizando o texto da descrição qual(quais) carta(s) específica(s) possui(possuem) a descrição.
 
         - podemos utilizar o banco de dados que encontramos em formato json para treinar o modelo;
@@ -14,3 +14,6 @@ plano B:
     classificador de patente no CSGO dado os parâmetros de uma partida
         - os parâmetros são dano, KDA, posicionamento no mapa, etc
         - encontramos um banco de dados que armazena essas informações, logo não será necessário criá-lo: https://www.kaggle.com/datasets/skihikingkevin/csgo-matchmaking-damage
+        
+        - caso for interessante, podemos aumentar a complexidade do projeto da seguinte forma:
+        - com essa informação, podemos criar um score para cada jogador, com o intuito de dar match em 10 jogadores com habilidades equivalentes (o jogo é 5x5)
