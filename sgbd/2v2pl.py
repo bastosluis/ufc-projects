@@ -49,23 +49,23 @@ class Commit(Operation):
     def __init__(self, transaction_id: int, operand: str=None):
         super().__init__(transaction_id, operand)
 
-class Tuple():
-    def __init__(self, id: int, name: str, value):
+class DB_Object(ABC):
+    def __init__(self, id: int, name: str, value_list: List):
         self.id = id
         self.name = name
-        self.value = value
+        self.value_list = value_list
 
-class Page():
+class Tuple(DB_Object):
+    def __init__(self, id: int, name: str, value_list: List[int]):
+        super().__init__(id, name, value_list)
+
+class Page( DB_Object):
     def __init__(self, id: int, name: str, tuple_list: List[Tuple]):
-        self.id = id
-        self.name = name
-        self.tuple_list = tuple_list
+        super().__init__(id, name, tuple_list)
 
-class Table():
+class Table( DB_Object):
     def __init__(self, id: int, name: str, page_list: List[Page]):
-        self.id = id
-        self.name = name
-        self.page_list = page_list
+        super().__init__(id, name, page_list)
     def __str__(self):
         string = f'Table {self.name} (id: {self.id}):'
         for i in range(len(self.page_list)):
