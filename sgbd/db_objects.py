@@ -8,17 +8,17 @@ class DB_Object(ABC):
         self.name = name
 
 class Tuple(DB_Object):
-    def __init__(self, id: int, name: str, value_list: List[int]):
+    def __init__(self, id: int, name: str, value_list: List[int]=None):
         super().__init__(id, name)
         self.value_list = value_list
 
 class Page(DB_Object):
-    def __init__(self, id: int, name: str, tuple_list: List[Tuple]):
+    def __init__(self, id: int, name: str, tuple_list: List[Tuple]=None):
         super().__init__(id, name)
         self.tuple_list = tuple_list
 
 class Table(DB_Object):
-    def __init__(self, id: int, name: str, page_list: List[Page]):
+    def __init__(self, id: int, name: str, page_list: List[Page]=None):
         super().__init__(id, name)
         self.page_list = page_list
     def __str__(self):

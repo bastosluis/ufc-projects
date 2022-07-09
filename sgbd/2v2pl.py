@@ -3,10 +3,9 @@ from abc import ABC
 from typing import List
 import operations as op
 import db_objects as db
-VALID_OP = ['r', 'w', 'c']
-READ_LOCK = 0
-WRITE_LOCK = 1
-CERTIFY_LOCK = 2
+from checkTable import CheckTable
+from tableRow import TableRow
+import constants
 
 def parse(raw_tokens: List[str]):
     op_list: List[op.Operation] = []
@@ -17,22 +16,61 @@ def parse(raw_tokens: List[str]):
         transaction_num_order.append(parsed_token.transaction_id)
     return op_list, transaction_num_order
 
+def parse_granulosity(transaction_id : int, operand : str, granulosity : str) -> db.DB_Object:
+    if granulosity.lower()=="table":
+        return db.Table(id=transaction_id,name=operand)
+    elif granulosity.lower()=="page":
+        return db.Page(id=transaction_id,name=operand)
+    elif granulosity.lower()=="tuple":
+        return db.Tuple(id=transaction_id,name=operand)
+
 def transform(token: str):
     operation = token[0]
-    if operation not in VALID_OP:
+    if operation not in constants.VALID_OP:
         raise Exception(f'Operação inválida encontrada: {token}') 
     l_paren = token.find('(')
     r_paren = token.find(')')
+    colon = token.find(':')
+
+    
+    operand=token[l_paren+1:colon]
+    if operation!='c':
+        transaction_id=int(token[1])
+        granulosity=token[colon+1:r_paren]
+        granulosity_object=parse_granulosity(transaction_id,operand,granulosity)
+    else:
+        transaction_id=int(token[1])
+
+
     if operation == 'r':
-        transformed_op = op.Read(transaction_id=int(token[1:l_paren]), operand=token[l_paren+1:r_paren] )
+        transformed_op = op.Read(transaction_id=transaction_id, operand=operand, granulosity=granulosity_object )
     elif operation == 'w':
-        transformed_op = op.Write(transaction_id=int(token[1:l_paren]), operand=token[l_paren+1:r_paren] )
+        transformed_op = op.Write(transaction_id=int(token[1:l_paren]), operand=token[l_paren+1:colon], granulosity=granulosity_object )
+    elif operation == 'u':
+        transformed_op = op.Update(transaction_id=int(token[1:l_paren]), operand=token[l_paren+1:colon], granulosity=granulosity_object)
     elif operation == 'c':
+        
         transformed_op = op.Commit(transaction_id=int(token[1]))
+
     return transformed_op
 
+def main():
+    user_input = input("Digite:")
+    table = CheckTable()
+    tokens = user_input.replace(","," ").split(" ")
+    print(tokens)
+    op_list, transaction_num_order = parse(tokens)
+    wait_rows = []
+    for op in op_list:
+        newRow = TableRow(op.transaction_id,op.lock_type,op.granulosity,constants.STATUS_UNDEFINED)
+        table.add_row(newRow)
+    for row in table.get_all_rows():
+        print(row.get_lock_type())
 
+if __name__=="__main__":
+    main()
 
+"""
 page_list = []
 for i in range(4):
     new_page = db.Page(id = i, name=f'page{i}', tuple_list=[1])
@@ -46,4 +84,4 @@ op_list, transaction_num_order = parse(tokens)
 transaction_num = np.unique(transaction_num_order)
 transaction_total = transaction_num[-1]
 for op in op_list:
-    print(f'{op}')
+    print(f'{op}')"""

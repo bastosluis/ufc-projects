@@ -1,4 +1,5 @@
 from typing import List
+from db_objects import DB_Object
 
 class TableRow():
     def __init__(self, transaction_id : int, lock_type :  int, object :  DB_Object, status : int) -> None:
