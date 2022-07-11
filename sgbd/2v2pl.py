@@ -7,6 +7,10 @@ from checkTable import CheckTable
 from tableRow import TableRow
 import constants
 
+# coisas a fazer:
+# ver a linha 85
+# implementar o escalonamento 
+
 def parse(raw_tokens: List[str]):
     op_list: List[op.Operation] = []
     transaction_num_order: List[int] = []
@@ -56,14 +60,32 @@ def transform(token: str):
 
 def main():
     user_input = input("Digite:")
-    table = CheckTable()
     tokens = user_input.replace(","," ").split(" ")
     print(tokens)
     op_list, transaction_num_order = parse(tokens)
+    transaction_list = np.unique(transaction_num_order)
+    aborted_status = [False for status in transaction_list]
+    order_list = [-1 for i in transaction_list]
     wait_rows = []
+    table = CheckTable(order_list)
+    # preenchimento inicial do grafo 
+    for t in transaction_list:
+        table.graph.addVertex(t)
+    # escalonamento das transações
     for op in op_list:
-        newRow = TableRow(op.transaction_id,op.lock_type,op.granulosity,constants.STATUS_UNDEFINED)
-        table.add_row(newRow)
+        if aborted_status[op.transaction_id] == True:
+            pass
+        else:
+            newRow = TableRow(op.transaction_id,op.lock_type,op.granulosity,constants.STATUS_UNDEFINED)
+            # se não ocorreu abort:
+            if table.add_row(newRow): 
+                if newRow.get_status() == constants.STATUS_WAITING:
+                    wait_rows.append()  
+            # se ocorreu abort:
+            else:
+                aborted_status[op.transaction_id] = True
+                # mudar: remover da lista de espera todas as linhas da transação
+                wait_rows.remove()
     for row in table.get_all_rows():
         print(row.get_lock_type())
 
