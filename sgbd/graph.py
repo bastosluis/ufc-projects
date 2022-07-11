@@ -33,6 +33,10 @@ class Graph():
     def vecVertexSize(self):
         return len(self.__vertexVec)
     
+    def clearVertex(self):
+        for v in self.__vertexVec:
+            v.state = constants.VERTEX_NOT_SEEN
+    
 def DFS(g: Graph,v:Vertex) -> bool:
     v.state = constants.VERTEX_CURRENT
     for n in v.neighbours:
