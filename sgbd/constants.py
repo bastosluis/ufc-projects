@@ -18,3 +18,11 @@ STATUS_WAITING = 3
 VERTEX_NOT_SEEN = 0
 VERTEX_CURRENT = 1
 VERTEX_DONE = 2
+
+def lock_to_string(lock_type):
+    if READ_LOCK:
+        return 'RL'
+    elif WRITE_LOCK:
+        return 'WL'
+    elif CERTIFY_LOCK:
+        return 'CL'

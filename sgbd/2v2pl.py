@@ -6,6 +6,7 @@ import db_objects as db
 from checkTable import CheckTable
 from tableRow import TableRow
 import constants
+#from constants import lock_to_string
 
 # coisas a fazer:
 # ver a linha 85
@@ -59,7 +60,8 @@ def transform(token: str):
     return transformed_op
 
 def main():
-    user_input = input("Digite:")
+    #user_input = input("Digite: ")
+    user_input = 'r1(x) w1(x) r2(x) w2(x) c2 c1'
     tokens = user_input.replace(","," ").split(" ")
     print(tokens)
     op_list, transaction_num_order = parse(tokens)
@@ -67,27 +69,37 @@ def main():
     aborted_status = [False for status in transaction_list]
     order_list = [-1 for i in transaction_list]
     wait_rows = []
+    result: List[TableRow] = []
     table = CheckTable(order_list)
     # preenchimento inicial do grafo 
     for t in transaction_list:
         table.graph.addVertex(t)
     # escalonamento das transações
     for op in op_list:
-        if aborted_status[op.transaction_id] == True:
+        print(f'op: {op}, len de aborted: {len(aborted_status)}, id: {op.transaction_id}')
+        if aborted_status[op.transaction_id-1] == True:
             pass
         else:
             newRow = TableRow(op.transaction_id,op.lock_type,op.granulosity,constants.STATUS_UNDEFINED)
             # se não ocorreu abort:
             if table.add_row(newRow): 
                 if newRow.get_status() == constants.STATUS_WAITING:
-                    wait_rows.append()  
+                    wait_rows.append(newRow)  
+                result.append(newRow)
             # se ocorreu abort:
             else:
                 aborted_status[op.transaction_id] = True
+                print(f'Error: Deadlock involving transaction T{op.transaction_id}: aborted with T{op.transaction_id} choosen as victim')
                 # mudar: remover da lista de espera todas as linhas da transação
-                wait_rows.remove()
+                #wait_rows.remove()
+                pass
+
+    # resultado:
     for row in table.get_all_rows():
-        print(row.get_lock_type())
+        #print(f'T{row.get_transaction_id()}, object: {row.get_object()}, lock type: {constants.lock_to_string(row.get_lock_type())}, status: {row.get_status()}')
+        print(f'T{row.get_transaction_id()}, object: {row.get_object()}, lock type: {row.get_lock_type()}, status: {row.get_status()}')
+    '''for row in table.get_all_rows():
+        print(row.get_lock_type())'''
 
 if __name__=="__main__":
     main()
