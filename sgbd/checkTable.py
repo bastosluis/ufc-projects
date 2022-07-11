@@ -4,8 +4,9 @@ from graph import Graph, detect_cycle
 import constants
 
 # coisas a fazer:
+# ajeitar remove_where()
 # adicionar implementações faltantes
-# adicionar o Xn ao final das implementações
+# adicionar o Xn ao final das implementações (?)
 
 class CheckTable():
         def __init__(self, transact_order) -> None:

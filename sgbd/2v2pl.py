@@ -10,6 +10,8 @@ import constants
 
 # coisas a fazer:
 # ver a linha 85
+# adicionar tabelas páginas e tuplas aos objetos TableRow
+# remover as linhas da tabela quando houver abort e commit
 # implementar o escalonamento 
 
 def parse(raw_tokens: List[str]):
