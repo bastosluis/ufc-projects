@@ -124,10 +124,12 @@ class CheckTable():
 
         def remove_where(self, transaction_id : int) -> List[TableRow]:
             removed : List[TableRow]
-            for index in range(len(self.__rows)):
+            row_count = len(self.__rows)
+            for index in range(row_count):
                 if self.__rows[index].transaction_id == transaction_id:
                     removed.append(self.__rows[index])
                     self.__rows.pop(index)
+                    row_count-=1
             return removed
 
 
