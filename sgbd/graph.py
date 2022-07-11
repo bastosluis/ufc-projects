@@ -19,7 +19,8 @@ class Graph():
     def addNeigh(self,transaction_id1 : int,transaction_id2 : int):
         v1 = self.__vertexVec[transaction_id1]
         v2 = self.__vertexVec[transaction_id2]
-        v1.neighbours.append(v2)
+        if not v2 in v1.neighbours:
+            v1.neighbours.append(v2)
         self.last_added = (v1,v2)
     def addVertex(self,label):
         v = Vertex(label)
