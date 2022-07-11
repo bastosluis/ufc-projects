@@ -22,6 +22,11 @@ class Graph():
         if not v2 in v1.neighbours:
             v1.neighbours.append(v2)
         self.last_added = (v1,v2)
+    def removeNeigh(self, transaction_id1 : int,transaction_id2 : int):
+        for index in range(len(self.__vertexVec[transaction_id1].neighbours)):
+            if self.__vertexVec[index].label == transaction_id2:
+                self.__vertexVec.pop(index)
+                break
     def addVertex(self,label):
         v = Vertex(label)
         self.__vertexVec.append(v)
