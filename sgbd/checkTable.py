@@ -167,7 +167,7 @@ class CheckTable():
                 self.transact_order[curr_transaction-1] = self.order_counter
                 self.order_counter += 1
             return True
-
+        # remove tuplas
         def remove_where(self, transaction_id : int) -> List[TableRow]:
             removed : List[TableRow] = []
             row_count = len(self.__rows)
