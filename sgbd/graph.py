@@ -1,6 +1,6 @@
 import constants
 from sgbd.constants import VERTEX_CURRENT      
-
+from typing import List
 
 class Vertex():
     def __init__(self,label):
@@ -12,11 +12,13 @@ class Vertex():
         
 class Graph():
     def __init__(self):
-        self.__vertexVec = []
+        self.__vertexVec = List[Vertex]
         self.last_added = None
-    def getVertex(self,index):
+    def getVertex(self,index : int):
         return self.__vertexVec[index]
-    def addNeigh(self,v1,v2):
+    def addNeigh(self,transaction_id1 : int,transaction_id2 : int):
+        v1 = self.__vertexVec[transaction_id1]
+        v2 = self.__vertexVec[transaction_id2]
         v1.neighbours.append(v2)
         self.last_added = (v1,v2)
     def addVertex(self,label):
