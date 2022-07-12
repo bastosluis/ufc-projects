@@ -92,7 +92,7 @@ def main():
             else:
                 aborted_status[op.transaction_id] = True
                 print(f'Error: Deadlock involving transaction T{op.transaction_id}: aborted with T{op.transaction_id} choosen as victim')
-                list_remove()
+                #list_remove()
                 pass
 
     # resultado:
