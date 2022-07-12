@@ -92,8 +92,7 @@ def main():
             else:
                 aborted_status[op.transaction_id] = True
                 print(f'Error: Deadlock involving transaction T{op.transaction_id}: aborted with T{op.transaction_id} choosen as victim')
-                # mudar: remover da lista de espera todas as linhas da transação
-                #wait_rows.remove()
+                list_remove()
                 pass
 
     # resultado:
