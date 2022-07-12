@@ -78,27 +78,43 @@ def main():
         table.graph.addVertex(t)
     # escalonamento das transações
     for op in op_list:
-        print(f'op: {op}, len de aborted: {len(aborted_status)}, id: {op.transaction_id}')
+        #print(f'op: {op}, len de aborted: {len(aborted_status)}, id: {op.transaction_id}')
         if aborted_status[op.transaction_id-1] == True:
             pass
         else:
             newRow = TableRow(op.transaction_id,op.lock_type,op.granulosity,constants.STATUS_UNDEFINED)
-            # se não ocorreu abort:
-            if table.add_row(newRow): 
-                if newRow.get_status() == constants.STATUS_WAITING:
+            # se não ocorreu abort (retorno -1):
+            aborted_id = table.add_row(newRow)
+            if aborted_id == -1: 
+                if (newRow.get_status() == constants.STATUS_GRANTED):
+                    result.append(newRow)
+                    if (newRow.get_lock_type() == constants.CERTIFY_LOCK):
+                        for k in wait_rows:
+                            if k.get_transaction_id() == op.transaction_id:
+                                k.set_status(constants.STATUS_GRANTED)
+                elif newRow.get_status() == constants.STATUS_WAITING:
                     wait_rows.append(newRow)  
-                result.append(newRow)
+                
             # se ocorreu abort:
             else:
-                aborted_status[op.transaction_id] = True
-                print(f'Error: Deadlock involving transaction T{op.transaction_id}: aborted with T{op.transaction_id} choosen as victim')
-                #list_remove()
-                pass
+                aborted_status[aborted_id-1] = True
+                print(f'Error: Deadlock involving transaction T{aborted_id}: aborted with T{aborted_id} choosen as victim')
+                for k in table.get_all_rows():
+                    if k.get_transaction_id() == aborted_id:
+                        k.set_status(constants.STATUS_ABORTED)
+                if newRow.get_transaction_id() != aborted_id:
+                    result.append(newRow)
+
 
     # resultado:
+    print('Tabela resultante:')
     for row in table.get_all_rows():
         #print(f'T{row.get_transaction_id()}, object: {row.get_object()}, lock type: {constants.lock_to_string(row.get_lock_type())}, status: {row.get_status()}')
         print(f'T{row.get_transaction_id()}, object: {row.get_object()}, lock type: {row.get_lock_type()}, status: {row.get_status()}')
+
+    print('Escalonamento resultante:')
+    for row in result:
+        print(f'T{row.get_transaction_id()}, object: {row.get_object()}, operation type: {row.get_lock_type()}')
     '''for row in table.get_all_rows():
         print(row.get_lock_type())'''
 

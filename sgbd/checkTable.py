@@ -1,6 +1,7 @@
 from typing import List
 from tableRow import TableRow
 from graph import Graph, detect_cycle
+import numpy as np
 import constants
 
 # coisas a fazer:
@@ -34,11 +35,14 @@ class CheckTable():
             # remove a aresta mais recente com a transação:
             self.graph.removeNeigh()
             last_added = self.graph.last_added 
-            newest = max( self.transact_order[(last_added[0].label)-1], self.transact_order[(last_added[1].label)-1] )
+            #print(f'{self.transact_order}')
+            newest = self.transact_order.index(max( self.transact_order[(last_added[0].label)-1], self.transact_order[(last_added[1].label)-1] ))+1
+            #print(f'vértice 1: {last_added[0].label}\nvertice 2: {last_added[1].label}\nescolhida: {newest}')
             self.remove_where(newest)
+            return newest
 
         # retorna uma flag true: sem abort, false: ocourreu abort
-        def add_row(self,row : TableRow) -> bool:
+        def add_row(self,row : TableRow) -> int:
             curr_lock = row.get_lock_type()
             curr_transaction = row.get_transaction_id()
 
@@ -53,12 +57,13 @@ class CheckTable():
                         conflict_list.append(i.get_transaction_id())
                 if conflict == True:
                     row.set_status(constants.STATUS_WAITING)
+                    self.__rows.append(row)
                     # checa se a nova transação gera cíclo no grafo de espera 
                     if self.check_abort(curr_transaction, conflict_list):
-                        print(f'ciclo encontrado com a adição de T{curr_transaction}')
+                        print(f'Cycle found with the addition of T{curr_transaction}')
                          # remove a aresta mais recente
-                        self.abort_newest()
-                        return False
+                        aborted_t = self.abort_newest()
+                        return aborted_t
                 else: 
                     row.set_status(constants.STATUS_GRANTED)
                 self.__rows.append(row)
@@ -75,12 +80,13 @@ class CheckTable():
                         conflict_list.append(i.get_transaction_id())
                 if conflict == True:
                     row.set_status(constants.STATUS_WAITING)
+                    self.__rows.append(row)
                     # checa se a nova transação gera cíclo no grafo de espera 
                     if self.check_abort(curr_transaction, conflict_list):
-                        print(f'ciclo encontrado com a adição de T{curr_transaction}')
+                        print(f'Cycle found with the addition of T{curr_transaction}')
                          # remove a aresta mais recente
-                        self.abort_newest()
-                        return False
+                        aborted_t = self.abort_newest()
+                        return aborted_t
                 else: 
                     row.set_status(constants.STATUS_GRANTED)
                 self.__rows.append(row)
@@ -99,12 +105,13 @@ class CheckTable():
                                 conflict_list.append(k.get_transaction_id())
                 if conflict == True:
                     row.set_status(constants.STATUS_WAITING)
+                    self.__rows.append(row)
                     # checa se a nova transação gera cíclo no grafo de espera 
                     if self.check_abort(curr_transaction, conflict_list):
-                        print(f'ciclo encontrado com a adição de T{curr_transaction}')
+                        print(f'Error: Cycle found in wait graph with the addition of T{curr_transaction}')
                          # remove a aresta mais recente
-                        self.abort_newest()
-                        return False
+                        aborted_t = self.abort_newest()
+                        return aborted_t
                 else: 
                     row.set_status(constants.STATUS_GRANTED)
                 self.__rows.append(row)
@@ -167,20 +174,21 @@ class CheckTable():
             if self.transact_order[curr_transaction-1] == -1:
                 self.transact_order[curr_transaction-1] = self.order_counter
                 self.order_counter += 1
-            return True
+            #retorno -1 para indicar sucesso, caso contrário retornar transação abortada
+            return -1
         # remove tuplas
         def remove_where(self, transaction_id : int) -> List[TableRow]:
             removed : List[TableRow] = []
             row_count = len(self.__rows)
             index = 0
             while index < row_count:
+                #print(f'len de self.rows: {len(self.__rows)}\nrow count: {row_count}\nindex atual: {index}')
                 if self.__rows[index].get_transaction_id() == transaction_id:
                     removed.append(self.__rows[index])
                     self.__rows.pop(index)
                     row_count-=1
-                    index+=1
+                index+=1
             return removed
-
 
 
 
